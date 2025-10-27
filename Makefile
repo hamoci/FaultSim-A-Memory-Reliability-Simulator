@@ -1,8 +1,8 @@
 CC=g++
-INC=-I$(BOOSTINC)
+INC=
 
 CFLAGS=-c -Wall -std=c++0x -O2
-LDFLAGS=-L $(BOOSTLIB) -lboost_program_options
+LDFLAGS=
 
 SOURCES := $(wildcard src/*.cpp)
 OBJECTS=$(SOURCES:.cpp=.o)
@@ -11,16 +11,15 @@ EXECUTABLE=faultsim
 all: $(EXECUTABLE) doc
 
 $(EXECUTABLE): $(OBJECTS)
-	$(CC) $(LDFLAGS) $(OBJECTS) -o $@
+	$(CC) $(OBJECTS) $(LDFLAGS) -lboost_program_options -o $@
 
 .cpp.o:
-	$(CC) $(CFLAGS) $(INC) $< -o $@
+	$(CC) $(CFLAGS) $< -o $@
 
 clean:
 	rm -rf faultsim
 	rm -rf src/*.o
-	cd doc && make clean
 
 doc:
-	cd doc && make
+	cd doc && make || true
 

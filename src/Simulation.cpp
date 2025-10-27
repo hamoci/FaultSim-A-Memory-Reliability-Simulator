@@ -22,6 +22,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include <inttypes.h>
 using namespace std;
 
+
 Simulation::Simulation( uint64_t interval_t, uint64_t scrub_interval_t, double fit_factor_t , uint test_mode_t, bool debug_mode_t, bool cont_running_t, uint64_t output_bucket_t) :
 				  m_interval(interval_t)
 , m_scrub_interval(scrub_interval_t)
@@ -77,6 +78,10 @@ void Simulation::resetStats( void )
 	stat_total_failures = 0;
 	stat_total_sims = 0;
 	stat_sim_seconds = 0;
+
+	/* Hamoci: Initialize CE */
+	stat_total_ce = 0;
+	/* Hamoci */
 }
 
 void Simulation::simulate( uint64_t max_time, uint64_t n_sims, int verbose, std::string output_file)
@@ -125,6 +130,7 @@ void Simulation::simulate( uint64_t max_time, uint64_t n_sims, int verbose, std:
 			stat_total_failures++;
 			if( verbose ) cout << "F";  // uncorrected
 		} else if( trans + perm != 0 ) {
+			stat_total_ce++;
 			if( verbose ) cout << "C";	// corrected
 		} else {
 			if( verbose ) cout << ".";  // no failures
@@ -314,6 +320,7 @@ void Simulation::printStats( void )
 	for( it = m_domains.begin(); it != m_domains.end(); it++ ) {
 		(*it)->printStats();
 	}
-
+	// cout << "Correctable Errors (CE): " << stat_total_ce 
+	// 	<< " (" << stat_total_ce << "\n";
 	cout << "\n";
 }

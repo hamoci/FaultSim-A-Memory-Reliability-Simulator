@@ -26,7 +26,7 @@ typedef boost::mt19937						ENG32;
 class DRAMDomain : public FaultDomain
 {
 	public:
-	DRAMDomain( char *name, uint32_t n_bitwidth, uint32_t n_ranks, uint32_t n_banks, uint32_t n_rows, uint32_t n_cols);
+	DRAMDomain( char *name, uint32_t n_bitwidth, uint32_t n_ranks, uint32_t n_banks, uint32_t n_rows, uint32_t n_cols, uint32_t n_chips_per_rank);
 
 	void setFIT( int faultClass, bool isTransient, double FIT );
     void init( uint64_t interval, uint64_t sim_seconds, double fit_factor );
@@ -51,6 +51,7 @@ class DRAMDomain : public FaultDomain
 	uint32_t getBanks(void);
 	uint32_t getRows(void);
 	uint32_t getCols(void);
+	uint32_t getChipsPerRank(void);
     
     //uint32_t getChipNumber(void);
 
@@ -81,6 +82,7 @@ class DRAMDomain : public FaultDomain
 	uint64_t n_faults_transient_tsv, n_faults_permanent_tsv;
 
 	uint32_t m_bitwidth, m_ranks, m_banks, m_rows, m_cols;
+	uint32_t m_chips_per_rank;
 	uint32_t m_logBits, m_logRanks, m_logBanks, m_logRows, m_logCols;
 };
 

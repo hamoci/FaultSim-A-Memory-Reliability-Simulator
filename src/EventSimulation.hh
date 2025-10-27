@@ -18,7 +18,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 class EventSimulation : public Simulation {
 public:
 	EventSimulation( uint64_t interval_t, uint64_t scrub_interval_t, double fit_factor_t, uint test_mode_t, bool debug_mode_t,
-				     bool cont_running_t, uint64_t output_bucket_t );	
+			     bool cont_running_t, uint64_t output_bucket_t );	
 	// Simulation loop for a single simulation in Event Driven mode
 	virtual uint64_t runOne( uint64_t max_time, int verbose, uint64_t bin_length );
 };

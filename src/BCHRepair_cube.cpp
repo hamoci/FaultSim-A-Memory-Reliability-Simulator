@@ -13,6 +13,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 #include "BCHRepair_cube.hh"
 #include "DRAMDomain.hh"
 #include "Settings.hh"
+#include <iostream>
 
 extern struct Settings settings;
 

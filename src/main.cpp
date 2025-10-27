@@ -166,7 +166,7 @@ GroupDomain* genModuleDIMM( void )
 	for( uint32_t i = 0; i < settings.chips_per_rank; i++ ) {
 		char buf[20];
 		sprintf( buf, "MODULE0.DRAM%d", i );
-		DRAMDomain *dram0 = new DRAMDomain( buf, settings.chip_bus_bits, settings.ranks, settings.banks, settings.rows, settings.cols );
+		DRAMDomain *dram0 = new DRAMDomain( buf, settings.chip_bus_bits, settings.ranks, settings.banks, settings.rows, settings.cols, settings.chips_per_rank );
 
 		if( settings.faultmode == FM_UNIFORM_BIT ) {
 			if( settings.enable_transient ) dram0->setFIT( DRAM_1BIT, 1, 33.05 );
@@ -247,7 +247,7 @@ GroupDomain *genModule3D( void )
 	for( uint32_t i = 0; i < settings.chips_per_rank; i++ ) {
 		char buf[20];
 		sprintf( buf, "MODULE0.DRAM%d", i );
-		DRAMDomain *dram0 = new DRAMDomain( buf, settings.chip_bus_bits, settings.ranks, settings.banks, settings.rows, settings.cols );
+		DRAMDomain *dram0 = new DRAMDomain( buf, settings.chip_bus_bits, settings.ranks, settings.banks, settings.rows, settings.cols, settings.chips_per_rank );
 
 		if( settings.faultmode == FM_UNIFORM_BIT ) {
 			// use a default FIT rate equal to probability of any Jaguar fault

@@ -21,7 +21,7 @@ THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND 
 
 extern struct Settings settings;
 
-DRAMDomain::DRAMDomain( char *name, uint32_t n_bitwidth, uint32_t n_ranks, uint32_t n_banks, uint32_t n_rows, uint32_t n_cols ) : FaultDomain( name )
+DRAMDomain::DRAMDomain( char *name, uint32_t n_bitwidth, uint32_t n_ranks, uint32_t n_banks, uint32_t n_rows, uint32_t n_cols, uint32_t n_chips_per_rank ) : FaultDomain( name )
 , dist(0,1)
 , gen(eng,dist)
 , m_bitwidth( n_bitwidth )
@@ -29,6 +29,7 @@ DRAMDomain::DRAMDomain( char *name, uint32_t n_bitwidth, uint32_t n_ranks, uint3
 , m_banks( n_banks )
 , m_rows( n_rows )
 , m_cols( n_cols )
+, m_chips_per_rank( n_chips_per_rank )
 {
 	struct timeval tv;
 	gettimeofday (&tv, NULL);
@@ -296,12 +297,84 @@ void DRAMDomain::init( uint64_t interval, uint64_t sim_seconds, double fit_facto
 	// interval in seconds
 	// one-time initialization scales FIT rates to interval scale
 
+	/* Hamoci Start */
+	// Baseline configuration (from DIMM_none.ini)
+    const uint64_t baseline_ranks = 1;
+    const uint64_t baseline_banks = 8;
+    const uint64_t baseline_rows = 16384;
+    const uint64_t baseline_cols = 2048;
+    const uint64_t baseline_bits = 4;
+
+	/* Hamoci End */
+
 	// For Event Driven sim ////////////////////////////////////////////
 	for( int i = 0; i < DRAM_MAX; i++ ) {
-		hrs_per_fault[i] = ((double)1000000000.0) / (transientFIT[i] * fit_factor);
+		/* Hamoci Start */
+		double scaling_factor = 1.0;
+		switch( i ) {
+			case DRAM_1BIT:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols * m_bitwidth) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols * baseline_bits);
+				break;
+			case DRAM_1WORD:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols);
+				break;
+			case DRAM_1COL:
+				scaling_factor = ((double)m_ranks * m_banks * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_cols);
+				break;
+			case DRAM_1ROW:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows) /
+								((double)baseline_ranks * baseline_banks * baseline_rows);
+				break;
+			case DRAM_1BANK:
+				scaling_factor = ((double)m_ranks * m_banks) /
+								((double)baseline_ranks * baseline_banks);
+				break;
+			case DRAM_NBANK:
+				scaling_factor = (double)m_ranks / (double)baseline_ranks;
+				break;
+			case DRAM_NRANK:
+				scaling_factor = 1.0;
+				break;
+		}
+		/* Hamoci End */
+		hrs_per_fault[i] = ((double)1000000000.0) / (transientFIT[i] * fit_factor * scaling_factor);
 	}
 	for( int i = DRAM_MAX; i < DRAM_MAX*2; i++ ) {
-		hrs_per_fault[i] = ((double)1000000000.0) / (permanentFIT[i-DRAM_MAX] * fit_factor);
+		/* Hamoci Start */
+		double scaling_factor = 1.0;
+		switch( i-DRAM_MAX ) {
+			case DRAM_1BIT:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols * m_bitwidth) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols * baseline_bits);
+				break;
+			case DRAM_1WORD:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols);
+				break;
+			case DRAM_1COL:
+				scaling_factor = ((double)m_ranks * m_banks * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_cols);
+				break;
+			case DRAM_1ROW:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows) /
+								((double)baseline_ranks * baseline_banks * baseline_rows);
+				break;
+			case DRAM_1BANK:
+				scaling_factor = ((double)m_ranks * m_banks) /
+								((double)baseline_ranks * baseline_banks);
+				break;
+			case DRAM_NBANK:
+				scaling_factor = (double)m_ranks / (double)baseline_ranks;
+				break;
+			case DRAM_NRANK:
+				scaling_factor = 1.0;
+				break;
+		}
+		/* Hamoci End */
+		hrs_per_fault[i] = ((double)1000000000.0) / (permanentFIT[i-DRAM_MAX] * fit_factor * scaling_factor);
 	}
 	////////////////////////////////////////////////////////////////////
 
@@ -318,8 +391,47 @@ void DRAMDomain::init( uint64_t interval, uint64_t sim_seconds, double fit_facto
 	// http://en.wikipedia.org/wiki/Failure_rate
 
 	for( int i = 0; i < DRAM_MAX; i++ ) {
-		transientFIT[i] = (double)1.0 - exp( -transientFIT[i] * fit_factor * interval_factor );
-		permanentFIT[i] = (double)1.0 - exp( -permanentFIT[i] * fit_factor * interval_factor );
+		/* Hamoci Start */
+		double scaling_factor = 1.0;
+		switch( i ) {
+			case DRAM_1BIT:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols * m_bitwidth) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols * baseline_bits);
+				break;
+			case DRAM_1WORD:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_rows * baseline_cols);
+				break;
+			case DRAM_1COL:
+				scaling_factor = ((double)m_ranks * m_banks * m_cols) /
+								((double)baseline_ranks * baseline_banks * baseline_cols);
+				break;
+			case DRAM_1ROW:
+				scaling_factor = ((double)m_ranks * m_banks * m_rows) /
+								((double)baseline_ranks * baseline_banks * baseline_rows);
+				break;
+			case DRAM_1BANK:
+				scaling_factor = ((double)m_ranks * m_banks) /
+								((double)baseline_ranks * baseline_banks);
+				break;
+			case DRAM_NBANK:
+				scaling_factor = (double)m_ranks / (double)baseline_ranks;
+				break;
+			case DRAM_NRANK:
+				scaling_factor = 1.0;
+				break;
+		}
+		std::cout << "DRAM Class " << faultClassString(i) << " Scaling Factor: " << scaling_factor << "\n";
+		std::cout << "DRAM Class " << faultClassString(i) << " Original Transient FIT: " << transientFIT[i] << " Permanent FIT: " << permanentFIT[i] << "\n";
+		transientFIT[i] = (double)1.0 - exp( -transientFIT[i] * scaling_factor * fit_factor * interval_factor );
+		permanentFIT[i] = (double)1.0 - exp( -permanentFIT[i] * scaling_factor * fit_factor * interval_factor );
+		std::cout << "DRAM Class " << faultClassString(i) << " Scaled Transient FIT: " << transientFIT[i] << " Permanent FIT: " << permanentFIT[i] << "\n\n";
+		/* Hamoci End */
+
+		/* Hamoci: This Codes Are Original */
+		// transientFIT[i] = (double)1.0 - exp( -transientFIT[i] * fit_factor * interval_factor );
+		// permanentFIT[i] = (double)1.0 - exp( -permanentFIT[i] * fit_factor * interval_factor );
+
 		assert( transientFIT[i] >= 0 );
 		assert( transientFIT[i] <= 1 );
 		assert( permanentFIT[i] >= 0 );
@@ -489,6 +601,11 @@ uint32_t DRAMDomain::getCols(void)
 uint32_t DRAMDomain::getBanks(void)
 {
 	return m_banks;
+}
+
+uint32_t DRAMDomain::getChipsPerRank(void)
+{
+	return m_chips_per_rank;
 }
 
 void DRAMDomain::printStats( void )
