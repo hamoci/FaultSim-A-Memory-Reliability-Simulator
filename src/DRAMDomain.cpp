@@ -298,10 +298,10 @@ void DRAMDomain::init( uint64_t interval, uint64_t sim_seconds, double fit_facto
 	// one-time initialization scales FIT rates to interval scale
 
 	/* Hamoci Start */
-	// Baseline configuration (from DIMM_none.ini)
+	// Baseline configuration (DDR5 32Gb chip: matches DRAM_FAULT_SIM DDR5 config)
     const uint64_t baseline_ranks = 1;
-    const uint64_t baseline_banks = 8;
-    const uint64_t baseline_rows = 16384;
+    const uint64_t baseline_banks = 32;
+    const uint64_t baseline_rows = 131072;
     const uint64_t baseline_cols = 2048;
     const uint64_t baseline_bits = 4;
 

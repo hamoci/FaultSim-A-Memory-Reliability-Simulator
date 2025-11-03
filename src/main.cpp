@@ -173,23 +173,23 @@ GroupDomain* genModuleDIMM( void )
 			if( settings.enable_permanent ) dram0->setFIT( DRAM_1BIT, 0, 33.05 );
 		} else if( settings.faultmode == FM_JAGUAR ) {
 			if( settings.enable_transient ) {
-				dram0->setFIT( DRAM_1BIT, 1, 14.2 );
-				dram0->setFIT( DRAM_1WORD, 1, 1.4 );
-				dram0->setFIT( DRAM_1COL, 1, 1.4 );
-				dram0->setFIT( DRAM_1ROW, 1, 0.2 );
-				dram0->setFIT( DRAM_1BANK, 1, 0.8 );
-				dram0->setFIT( DRAM_NBANK, 1, 0.3 );
-				dram0->setFIT( DRAM_NRANK, 1, 0.9 );
+				dram0->setFIT( DRAM_1BIT, 1, 50.28 );
+				dram0->setFIT( DRAM_1WORD, 1, 0.0 );
+				dram0->setFIT( DRAM_1COL, 1, 17.4715 );
+				dram0->setFIT( DRAM_1ROW, 1, 1.83706 );
+				dram0->setFIT( DRAM_1BANK, 1, 19.5283 );
+				dram0->setFIT( DRAM_NBANK, 1, 0.1816 );
+				dram0->setFIT( DRAM_NRANK, 1, 0.19514 );
 			}
 
 			if( settings.enable_permanent ) {
-				dram0->setFIT( DRAM_1BIT, 0, 18.6 );
-				dram0->setFIT( DRAM_1WORD, 0, 0.3 );
-				dram0->setFIT( DRAM_1COL, 0, 5.6 );
-				dram0->setFIT( DRAM_1ROW, 0, 8.2 );
-				dram0->setFIT( DRAM_1BANK, 0, 10.0 );
-				dram0->setFIT( DRAM_NBANK, 0, 1.4 );
-				dram0->setFIT( DRAM_NRANK, 0, 2.8 );
+				dram0->setFIT( DRAM_1BIT, 0, 76.68 );
+				dram0->setFIT( DRAM_1WORD, 0, 0.0 );
+				dram0->setFIT( DRAM_1COL, 0, 5.81738 );
+				dram0->setFIT( DRAM_1ROW, 0, 14.3127 );
+				dram0->setFIT( DRAM_1BANK, 0, 7.92444 );
+				dram0->setFIT( DRAM_NBANK, 0, 0.365924 );
+				dram0->setFIT( DRAM_NRANK, 0, 0.989311 );
 			}
 		} else {
 			assert(0);
